@@ -10,7 +10,7 @@ from basket.models import Basket
 from product.models import Product
 
 
-class BasketListView(viewsets.ModelViewSet):
+class BasketListView(viewsets.ReadOnlyModelViewSet):
     serializer_class = BasketListSerializer
     
     def get_queryset(self):
