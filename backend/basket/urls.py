@@ -4,7 +4,7 @@ from basket.views import BasketListView
 
 
 router = DefaultRouter()
-router.register(r"baskets", BasketListView, basename="basket")
+router.register(r"", BasketListView, basename="basket")
 
 urlpatterns = [
     path('', include(router.urls)),
