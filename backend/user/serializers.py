@@ -4,6 +4,8 @@ from django.db import transaction
 
 from rest_framework import serializers
 
+from basket.models import Basket
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,7 +19,9 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('username', None)
         with transaction.atomic():
-          return get_user_model().objects.create_user(**validated_data)
+          user = get_user_model().objects.create_user(**validated_data)
+          Basket.objects.create(user=user)
+          return user
     
     def validate_password(self, password):
         if not re.search(r'\d', password):
