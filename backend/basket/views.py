@@ -9,4 +9,3 @@ from basket.models import Basket
 class BasketListView(generics.ListAPIView):
     serializer_class = BasketListSerializer
     queryset = Basket.objects.all()
-  

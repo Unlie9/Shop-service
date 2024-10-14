@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Tag
+from .models import Category
 
 
-class TagAdmin(admin.ModelAdmin):
+class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name",)  
     search_fields = ("name",)  
     ordering = ("name",)
 
-admin.site.register(Tag, TagAdmin)
+admin.site.register(Category, CategoryAdmin)

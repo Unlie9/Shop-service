@@ -23,4 +23,7 @@ class Basket(models.Model):
     
     def calculate_total_price(self):
         self.total_price = sum([product.price for product in self.products.all()])
-        self.save()
+        return self.total_price
+    
+    def get_products_info(self):
+        ...
