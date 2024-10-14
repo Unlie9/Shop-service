@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework import generics
 
-# Create your views here.
+from tag.serializers import TagSerializer
+from tag.models import Tag
+
+
+class TagListView(generics.ListAPIView):
+    serializer_class = TagSerializer
+    queryset = Tag.objects.all()
