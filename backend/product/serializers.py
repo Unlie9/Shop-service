@@ -8,4 +8,4 @@ class ProductSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     class Meta:
         model = Product
-        fields = ("id", "name", "price", "category", "tags")
+        fields = ("id", "name", "price", "image", "category", "tags")
