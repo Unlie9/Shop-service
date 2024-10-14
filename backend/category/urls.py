@@ -1,9 +1,12 @@
-from django.urls import path
-from category.views import CategoryListView
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+from category.views import CategoryListView, CategoryAdminView
 
 
-app_name = "category"
+router = DefaultRouter()
+router.register(r"admin", CategoryAdminView, basename="category")
 
 urlpatterns = [
-  path("", CategoryListView.as_view(), name="list")
+  path("user", CategoryListView.as_view(), name="list"),
+  path("", include(router.urls))
 ]
