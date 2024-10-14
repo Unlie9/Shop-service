@@ -1,10 +1,11 @@
-from django.urls import path
-
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
 from basket.views import BasketListView
 
 
-app_name = "basket"
+router = DefaultRouter()
+router.register(r"baskets", BasketListView, basename='basket')
 
 urlpatterns = [
-  path("list/", BasketListView.as_view(), name="list"),
+    path('', include(router.urls)),
 ]

@@ -22,9 +22,9 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("baskets/", include("basket.urls")),
-    path("products/", include("product.urls")),
-    path("tags/", include("tag.urls")),
+    path("basket/", include("basket.urls")),
+    path("product/", include("product.urls")),
+    path("tag/", include("tag.urls")),
     path("user/", include("user.urls")),
-    path("categories/", include("category.urls"))
+    path("category/", include("category.urls"))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
