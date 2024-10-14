@@ -7,6 +7,6 @@ router = DefaultRouter()
 router.register(r"admin", ProductAdminView, basename="product")
 
 urlpatterns = [
-  path("", ProductListView.as_view(), name="list"),
+  path("user/", ProductListView.as_view(), name="list"),
   path("", include(router.urls))
 ]

@@ -7,6 +7,6 @@ router = DefaultRouter()
 router.register(r"admin", TagAdminView, basename="tag")
 
 urlpatterns = [
-  path("", TagListView.as_view(), name="list"),
+  path("user/", TagListView.as_view(), name="list"),
   path("", include(router.urls))
 ]
