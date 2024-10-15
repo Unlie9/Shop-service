@@ -1,3 +1,5 @@
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.db import transaction
 from rest_framework import viewsets
 
@@ -8,6 +10,7 @@ from rest_framework import status
 from basket.serializers import BasketListSerializer
 from basket.models import Basket
 from product.models import Product
+from notification.tasks import send_order_notification
 
 
 class BasketListView(viewsets.ReadOnlyModelViewSet):
@@ -50,3 +53,19 @@ class BasketListView(viewsets.ReadOnlyModelViewSet):
         basket.save()
 
         return Response({"Product removed from your basket"}, status=status.HTTP_200_OK)
+    
+    @transaction.atomic
+    @action(detail=True, methods=["post"], url_path="make-order")
+    def make_order(self, request, pk=None):
+        basket = self.get_object()
+
+        if not basket.products.exists():
+            return Response({"Basket is empty"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        basket.products.clear()
+        basket.calculate_total_price()
+        basket.save()
+
+        send_order_notification.delay(self.request.user.username)
+
+        return Response({"Order successfully created"}, status=status.HTTP_200_OK)

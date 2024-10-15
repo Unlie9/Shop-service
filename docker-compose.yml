@@ -1,0 +1,53 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    image: python:3.12
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./backend:/app
+    command: sh -c "./entrypoint.sh"
+    depends_on:
+      - redis
+    networks:
+      - backend
+
+  daphne:
+    build:
+      context: ./backend
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - backend
+      - redis
+    command: sh -c "daphne -p 8003 -b 0.0.0.0 shop_service.asgi:application"
+    networks:
+      - backend
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+  celery:
+    build:
+      context: ./backend
+    volumes:
+      - ./backend:/app
+    command: celery -A shop_service worker --loglevel=info
+    depends_on:
+      - redis
+    networks:
+      - backend
+
+volumes:
+  db_data:
+
+networks:
+  backend:
+    driver: bridge
