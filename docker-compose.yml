@@ -28,7 +28,6 @@ services:
       - db
     networks:
       - backend
-
   daphne:
     build:
       context: ./backend
@@ -60,6 +59,19 @@ services:
       - redis
     env_file:
       - .env
+    networks:
+      - backend
+  
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
     networks:
       - backend
 
