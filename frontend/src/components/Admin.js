@@ -1,20 +1,19 @@
 import React, { useEffect } from 'react'
-import { refreshToken } from '../utils/auth' // Імпортуємо функцію для оновлення токена
+import { refreshToken } from '../utils/auth'
 import '../styles/Admin.css'
 
 function Admin() {
 	useEffect(() => {
 		const checkToken = async () => {
-			const access = await refreshToken() // Оновлюємо токен, якщо потрібно
+			const access = await refreshToken()
 			if (access) {
 				console.log('Access token updated')
-				// Використовуйте цей токен для будь-яких запитів до API
 			} else {
 				console.log('Failed to update access token')
 			}
 		}
 
-		checkToken() // Викликаємо функцію при завантаженні компонента
+		checkToken()
 	}, [])
 
 	return (
