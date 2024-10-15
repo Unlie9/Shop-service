@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import '../styles/Register.css'
 
 function Register() {
@@ -10,6 +11,7 @@ function Register() {
 	})
 
 	const [message, setMessage] = useState('')
+	const navigate = useNavigate()
 
 	const handleChange = e => {
 		setFormData({
@@ -22,7 +24,7 @@ function Register() {
 		e.preventDefault()
 
 		try {
-			const response = await fetch('http://localhost:8002/user/register/', {
+			const response = await fetch('http://127.0.0.1:8002/user/register/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -31,8 +33,12 @@ function Register() {
 			})
 
 			if (response.ok) {
-				setMessage('Registration successful!')
+				setMessage('Registration successful! Redirecting to login page...')
 				setFormData({ email: '', first_name: '', last_name: '', password: '' })
+
+				setTimeout(() => {
+					navigate('/login')
+				}, 2000)
 			} else {
 				const data = await response.json()
 				setMessage(data.detail || 'Registration failed!')
@@ -81,6 +87,9 @@ function Register() {
 				<button type='submit'>Register</button>
 			</form>
 			<p>{message}</p>
+			<p>
+				Already registered? <Link to='/login'>Click here to login</Link>
+			</p>{' '}
 		</div>
 	)
 }
