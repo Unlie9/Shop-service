@@ -1,15 +1,31 @@
 services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
   backend:
     build:
       context: ./backend
     image: python:3.12
     ports:
       - "8002:8002"
+    env_file:
+      - .env
     volumes:
       - ./backend:/app
     command: sh -c "./entrypoint.sh"
     depends_on:
-      - redis
+      - db
     networks:
       - backend
 
@@ -40,7 +56,10 @@ services:
     command: 
       celery -A shop_service worker -l INFO
     depends_on:
+      - backend
       - redis
+    env_file:
+      - .env
     networks:
       - backend
 

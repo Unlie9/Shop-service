@@ -1,7 +1,7 @@
-# until pg_isready -h db -p 5432; do
-#   echo "Waiting for PostgreSQL to be ready..."
-#   sleep 3
-# done
+until pg_isready -h db -p 5432; do
+  echo "Waiting for PostgreSQL to be ready..."
+  sleep 3
+done
 
 python manage.py makemigrations
 python manage.py migrate
