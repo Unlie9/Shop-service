@@ -1,5 +1,3 @@
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
 from django.db import transaction
 from rest_framework import viewsets
 
@@ -66,6 +64,6 @@ class BasketListView(viewsets.ReadOnlyModelViewSet):
         basket.calculate_total_price()
         basket.save()
 
-        send_order_notification.delay(self.request.user.username)
+        send_order_notification.delay(self.request.user.email)
 
         return Response({"Order successfully created"}, status=status.HTTP_200_OK)

@@ -37,9 +37,8 @@ services:
   celery:
     build:
       context: ./backend
-    volumes:
-      - ./backend:/app
-    command: celery -A shop_service worker --loglevel=info
+    command: 
+      celery -A shop_service worker -l INFO
     depends_on:
       - redis
     networks:
