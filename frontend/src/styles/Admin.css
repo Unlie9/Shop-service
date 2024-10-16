@@ -1,0 +1,23 @@
+.admin-container {
+    padding: 20px;
+}
+
+.admin-section {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.admin-section h2 {
+    margin-top: 0;
+}
+
+.admin-section div {
+    margin-bottom: 10px;
+}
+
+.admin-section input, .admin-section select {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}

@@ -12,9 +12,6 @@ function Sidebar() {
 					<Link to='/catalog'>Catalog</Link>
 				</li>
 				<li>
-					<Link to='/profile'>Profile</Link>
-				</li>
-				<li>
 					<Link to='/basket'>Basket</Link>
 				</li>
 				<li>

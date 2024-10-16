@@ -10,7 +10,7 @@ class Product(models.Model):
     description = models.TextField(max_length=1024)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     tags = models.ManyToManyField(Tag)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     image = models.ImageField(upload_to=product_image_file, blank=True, null=True)  
 
     def __str__(self):
