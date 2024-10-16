@@ -1,5 +1,7 @@
 # Shop-service
-...
+
+### Description
+Shop service with notifications and custom admin panel
 
 # Admin data
 ### email: admin@gmail.com
