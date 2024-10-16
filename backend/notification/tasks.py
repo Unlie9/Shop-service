@@ -7,7 +7,7 @@ from channels.layers import get_channel_layer
 def send_order_notification(email):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        "admin_notifications",
+        "notifications",
         {
             "type": 'send_notification',
             "message": f"User {email} has made an order.",
@@ -19,7 +19,7 @@ def send_order_notification(email):
 def send_registration_notification(email):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        "admin_notifications",
+        "notifications",
         {
             "type": "send_notification",
             "message": f"New user {email} has registered.",

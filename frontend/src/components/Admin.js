@@ -17,6 +17,36 @@ function Admin() {
 	})
 	const [editMode, setEditMode] = useState(false)
 	const [editProductId, setEditProductId] = useState(null)
+	const [notifications, setNotifications] = useState([])
+
+	useEffect(() => {
+		const ws = new WebSocket('ws://127.0.0.1:8003/ws/admin/notifications/')
+
+		ws.onmessage = event => {
+			const data = JSON.parse(event.data)
+			if (data.type === 'send_notification') {
+				setNotifications(prev => [...prev, data.message])
+        console.log('Notification received:', data.message)
+				alert(data.message)
+
+				setTimeout(() => {
+					setNotifications(prev => prev.slice(1))
+				}, 60000)
+			}
+		}
+
+		ws.onerror = error => {
+			console.error('WebSocket error:', error)
+		}
+
+		ws.onclose = () => {
+			console.log('WebSocket closed')
+		}
+
+		return () => {
+			ws.close()
+		}
+	}, [])
 
 	useEffect(() => {
 		const fetchAdminData = async () => {
@@ -222,6 +252,19 @@ function Admin() {
 	return (
 		<div className='admin-container'>
 			<h1>Admin Dashboard</h1>
+
+			{notifications.length > 0 && (
+				<div className='notification-popup'>
+					{notifications.map((notification, index) => {
+						console.log('Rendering notification:', notification)
+						return (
+							<div key={index} className='notification'>
+								{notification}
+							</div>
+						)
+					})}
+				</div>
+			)}
 
 			<div className='admin-section'>
 				<h2>{editMode ? 'Edit Product' : 'Create Product'}</h2>

@@ -29,11 +29,8 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1'
-                 ]
-CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000",]
-
-
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
+                 
 # Application definition
 
 INSTALLED_APPS = [
@@ -206,3 +203,8 @@ MEDIA_URL = "/media/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000",]
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']

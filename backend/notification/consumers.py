@@ -11,8 +11,9 @@ class AdminNotificationConsumer(AsyncJsonWebsocketConsumer):
 
     async def send_notification(self, event):
         message = event['message']
+        print(f"Sending notification: {message}") 
         await self.send_json({
-            "type": "notification",
+            "type": "send_notification",
             "message": message,
         })
   
