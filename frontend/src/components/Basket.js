@@ -23,7 +23,7 @@ function Basket() {
 					if (response.ok) {
 						const basketData = await response.json()
 						if (basketData.results && basketData.results.length > 0) {
-							setBasket(basketData.results[0]) 
+							setBasket(basketData.results[0])
 						} else {
 							setBasket(null)
 						}
@@ -80,6 +80,34 @@ function Basket() {
 		}
 	}
 
+	const handleMakeOrder = async () => {
+		try {
+			const access = await refreshToken()
+			if (access && basket) {
+				const response = await fetch(
+					`http://127.0.0.1:8002/basket/${basket.id}/make-order/`,
+					{
+						method: 'POST',
+						headers: {
+							Authorization: `Bearer ${access}`,
+							'Content-Type': 'application/json',
+						},
+					}
+				)
+
+				if (response.ok) {
+					alert('Order created successfully!')
+					setBasket(null) // Очищаем корзину после успешного создания заказа
+				} else {
+					alert('Failed to create order.')
+				}
+			}
+		} catch (err) {
+			console.error('Error creating order:', err)
+			alert('Error creating order.')
+		}
+	}
+
 	if (loading) {
 		return <p>Loading basket data...</p>
 	}
@@ -105,6 +133,7 @@ function Basket() {
 						))}
 					</ul>
 					<h3>Total Price: ${basket.total_price}</h3>
+					<button onClick={handleMakeOrder}>Make Order</button>
 				</div>
 			) : (
 				<p>Your basket is empty.</p>
