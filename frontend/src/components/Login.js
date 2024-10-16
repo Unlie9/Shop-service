@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom' // Імпортуємо Link
+import { useNavigate, Link } from 'react-router-dom' 
 import '../styles/Login.css'
 
 function Login() {
