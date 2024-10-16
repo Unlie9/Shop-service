@@ -1,0 +1,36 @@
+.basket-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: auto;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.basket-container h1 {
+    text-align: center;
+    color: #333;
+}
+
+.basket-details h2, .basket-details h3 {
+    color: #555;
+}
+
+.basket-details ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.basket-details ul li {
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.basket-details ul li:last-child {
+    border-bottom: none;
+}
+
+.basket-details h3 {
+    margin-top: 20px;
+}

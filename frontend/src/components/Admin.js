@@ -15,8 +15,8 @@ function Admin() {
 		tags: [],
 		image: null,
 	})
-	const [editMode, setEditMode] = useState(false) // Для режима редактирования
-	const [editProductId, setEditProductId] = useState(null) // ID редактируемого продукта
+	const [editMode, setEditMode] = useState(false)
+	const [editProductId, setEditProductId] = useState(null)
 
 	useEffect(() => {
 		const fetchAdminData = async () => {
