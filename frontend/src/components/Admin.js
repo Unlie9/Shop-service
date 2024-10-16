@@ -5,9 +5,9 @@ import '../styles/Admin.css'
 function Admin() {
 	const [products, setProducts] = useState([])
 	const [tags, setTags] = useState([])
+	const [newTag, setNewTag] = useState('')
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState('')
-
 	const [newProduct, setNewProduct] = useState({
 		name: '',
 		description: '',
@@ -17,6 +17,7 @@ function Admin() {
 	})
 	const [editMode, setEditMode] = useState(false)
 	const [editProductId, setEditProductId] = useState(null)
+	const [editTagId, setEditTagId] = useState(null)
 	const [notifications, setNotifications] = useState([])
 
 	useEffect(() => {
@@ -26,7 +27,6 @@ function Admin() {
 			const data = JSON.parse(event.data)
 			if (data.type === 'send_notification') {
 				setNotifications(prev => [...prev, data.message])
-        console.log('Notification received:', data.message)
 				alert(data.message)
 
 				setTimeout(() => {
@@ -153,13 +153,16 @@ function Admin() {
 			if (response.ok) {
 				const createdOrUpdatedProduct = await response.json()
 				if (editMode) {
-					setProducts(
-						products.map(p =>
+					setProducts(prevProducts =>
+						prevProducts.map(p =>
 							p.id === createdOrUpdatedProduct.id ? createdOrUpdatedProduct : p
 						)
 					)
 				} else {
-					setProducts([...products, createdOrUpdatedProduct])
+					setProducts(prevProducts => [
+						...prevProducts,
+						createdOrUpdatedProduct,
+					])
 				}
 				setNewProduct({
 					name: '',
@@ -181,6 +184,55 @@ function Admin() {
 		}
 	}
 
+	const handleCreateOrUpdateTag = async () => {
+		try {
+			const access = await refreshToken()
+			let response
+
+			if (editTagId) {
+				response = await fetch(
+					`http://127.0.0.1:8002/tag/admin/${editTagId}/`,
+					{
+						method: 'PUT',
+						headers: {
+							Authorization: `Bearer ${access}`,
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ name: newTag }),
+					}
+				)
+			} else {
+				response = await fetch('http://127.0.0.1:8002/tag/admin/', {
+					method: 'POST',
+					headers: {
+						Authorization: `Bearer ${access}`,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ name: newTag }),
+				})
+			}
+
+			if (response.ok) {
+				const createdTag = await response.json()
+				if (editTagId) {
+					setTags(prevTags =>
+						prevTags.map(t => (t.id === editTagId ? createdTag : t))
+					)
+				} else {
+					setTags(prevTags => [...prevTags, createdTag])
+				}
+				setNewTag('')
+				setEditTagId(null)
+			} else {
+				console.error('Failed to create/update tag')
+				setError('Failed to create/update tag.')
+			}
+		} catch (err) {
+			console.error('Error creating/updating tag:', err)
+			setError('Error creating/updating tag.')
+		}
+	}
+
 	const handleEditProduct = product => {
 		setNewProduct({
 			name: product.name,
@@ -191,6 +243,11 @@ function Admin() {
 		})
 		setEditMode(true)
 		setEditProductId(product.id)
+	}
+
+	const handleEditTag = tag => {
+		setNewTag(tag.name)
+		setEditTagId(tag.id)
 	}
 
 	const handleDeleteProduct = async productId => {
@@ -207,7 +264,9 @@ function Admin() {
 			)
 
 			if (response.ok) {
-				setProducts(products.filter(p => p.id !== productId))
+				setProducts(prevProducts =>
+					prevProducts.filter(p => p.id !== productId)
+				)
 			} else {
 				setError('Failed to delete product.')
 			}
@@ -231,7 +290,7 @@ function Admin() {
 			)
 
 			if (response.ok) {
-				setTags(tags.filter(t => t.id !== tagId))
+				setTags(prevTags => prevTags.filter(t => t.id !== tagId))
 			} else {
 				setError('Failed to delete tag.')
 			}
@@ -255,16 +314,26 @@ function Admin() {
 
 			{notifications.length > 0 && (
 				<div className='notification-popup'>
-					{notifications.map((notification, index) => {
-						console.log('Rendering notification:', notification)
-						return (
-							<div key={index} className='notification'>
-								{notification}
-							</div>
-						)
-					})}
+					{notifications.map((notification, index) => (
+						<div key={index} className='notification'>
+							{notification}
+						</div>
+					))}
 				</div>
 			)}
+
+			<div className='admin-section'>
+				<h2>{editTagId ? 'Edit Tag' : 'Create Tag'}</h2>
+				<input
+					type='text'
+					value={newTag}
+					placeholder='Tag name'
+					onChange={e => setNewTag(e.target.value)}
+				/>
+				<button onClick={handleCreateOrUpdateTag}>
+					{editTagId ? 'Update Tag' : 'Create Tag'}
+				</button>
+			</div>
 
 			<div className='admin-section'>
 				<h2>{editMode ? 'Edit Product' : 'Create Product'}</h2>
@@ -340,6 +409,7 @@ function Admin() {
 					tags.map(tag => (
 						<div key={tag.id}>
 							<p>{tag.name}</p>
+							<button onClick={() => handleEditTag(tag)}>Edit</button>
 							<button onClick={() => handleDeleteTag(tag.id)}>Delete</button>
 						</div>
 					))
