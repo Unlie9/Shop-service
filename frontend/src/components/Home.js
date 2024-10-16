@@ -3,14 +3,15 @@ import { refreshToken } from '../utils/auth'
 import '../styles/Home.css'
 
 function Home() {
-	const [products, setProducts] = useState([]) // Состояние для хранения списка продуктов
-	const [loading, setLoading] = useState(true) // Состояние для загрузки
-	const [error, setError] = useState('') // Состояние для ошибок
+	const [products, setProducts] = useState([])
+	const [loading, setLoading] = useState(true)
+	const [error, setError] = useState('')
+	const [basketId, setBasketId] = useState(null)
 
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
-				const access = await refreshToken() // Обновляем токен
+				const access = await refreshToken()
 				if (access) {
 					const response = await fetch('http://127.0.0.1:8002/product/user/', {
 						method: 'GET',
@@ -22,16 +23,8 @@ function Home() {
 
 					if (response.ok) {
 						const data = await response.json()
-						console.log('Data from API:', data) // Выводим данные для проверки
-
-						// Если данные содержат поле results (пагинация), используем его
-						if (data.results) {
-							setProducts(data.results)
-						} else {
-							setProducts(data) // Если просто массив
-						}
-
-						setLoading(false) // Отключаем состояние загрузки
+						setProducts(data.results ? data.results : data)
+						setLoading(false)
 					} else {
 						setError('Failed to load products')
 						setLoading(false)
@@ -47,8 +40,61 @@ function Home() {
 			}
 		}
 
+		const fetchBasket = async () => {
+			try {
+				const access = await refreshToken()
+				if (access) {
+					const response = await fetch('http://127.0.0.1:8002/basket/', {
+						method: 'GET',
+						headers: {
+							Authorization: `Bearer ${access}`,
+							'Content-Type': 'application/json',
+						},
+					})
+
+					if (response.ok) {
+						const basketData = await response.json()
+						if (basketData.results && basketData.results.length > 0) {
+							setBasketId(basketData.results[0].id) 
+						}
+					}
+				}
+			} catch (err) {
+				console.error('Error fetching basket:', err)
+			}
+		}
+
 		fetchProducts()
+		fetchBasket()
 	}, [])
+
+	const handleAddToBasket = async productId => {
+		try {
+			const access = await refreshToken()
+			if (access && basketId) {
+				const response = await fetch(
+					`http://127.0.0.1:8002/basket/${basketId}/add-product/`,
+					{
+						method: 'POST',
+						headers: {
+							Authorization: `Bearer ${access}`,
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ product_id: productId }),
+					}
+				)
+
+				if (response.ok) {
+					alert('Product added to basket!')
+				} else {
+					alert('Failed to add product to basket.')
+				}
+			}
+		} catch (err) {
+			console.error('Error adding product to basket:', err)
+			alert('Error adding product to basket.')
+		}
+	}
 
 	if (loading) {
 		return <p>Loading products...</p>
@@ -72,8 +118,10 @@ function Home() {
 							/>
 							<h3>{product.name}</h3>
 							<p>Price: ${product.price}</p>
-							<p>Category: {product.category}</p>
 							<p>Tags: {product.tags.map(tag => tag.name).join(', ')}</p>
+							<button onClick={() => handleAddToBasket(product.id)}>
+								Add to Basket
+							</button>
 						</div>
 					))
 				) : (
