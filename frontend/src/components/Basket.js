@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
 import { refreshToken } from '../utils/auth'
-import '../styles/Profile.css'
+import '../styles/Basket.css'
 
-function Profile() {
+
+function Basket() {
 	useEffect(() => {
 		const checkToken = async () => {
 			const access = await refreshToken()
@@ -18,10 +19,10 @@ function Profile() {
 
 	return (
 		<div>
-			<h1>Profile Page</h1>
-			<p>View and edit your profile here.</p>
+			<h1>Basket Page</h1>
+			<p>View and edit your basket here.</p>
 		</div>
 	)
 }
 
-export default Profile
+export default Basket
