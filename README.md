@@ -35,13 +35,8 @@ Shop service with notifications and custom admin panel
     python -m venv env
     source env/bin/activate
     ```
-3. **Install dependencies**:
-    ```bash
-    cd backend
-    pip install -r requirements.txt
-    ```
     > **Note**: Dont forget for your .env file
-4. **Run with Docker**:
+3. **Run with Docker**:
     ```bash
     docker-compose up --build
     ```
